@@ -11,7 +11,6 @@ def get_x():
 
 def get_m(list):
     m = np.mean(list, axis=0)
-    print(m)
     return(m)
 
 def get_c(list, m):
@@ -28,12 +27,33 @@ def get_xi(num):
     c = []
     for i in range(1,num+1):
         x = symbols('x'+ str(i))
-        c.append(x)
+        c.append(1*x)
     return(c)
 
 def get_d(p,C,m):
-    x = get_xi(len(m))
-    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* np.dot(np.dot((x-m),np.linalg.inv(C)), (x-m).reshape(-1,1))
+    x = np.array(get_xi(len(m)))
+    m = np.array(m)
+    a = x-m
+    #print('a为：',a)
+    b = np.dot(a,np.linalg.inv(C))
+    #print('b为：',b)
+    c = np.dot(b, a.reshape(-1,1))
+    #print("c为：",c)
+    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* c
+    #print("d为：",d)
+    return(d)
+
+def get_d0(x,p,C,m):        
+    x = np.array(x)
+    m = np.array(m)
+    a = x-m
+    #print('a为：',a)
+    b = np.dot(a,np.linalg.inv(C))
+    #print('b为：',b)
+    c = np.dot(b, a.reshape(-1,1))
+    #print("c为：",c)
+    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* c
+    #print("d为：",d)
     return(d)
     
 p1 = input("类别一的概率：")
@@ -47,9 +67,18 @@ m1 = get_m(list1)
 m2 = get_m(list2)
 c1 = get_c(list1, m1)
 c2 = get_c(list2, m2)
-print(m1,m2,c1,c2)
-
 d1 = get_d(p1, c1, m1)
 d2 = get_d(p2, c2, m2)
 y = d1 - d2
-print(y)
+y = simplify(y)
+print("判别方程为：",y, "=0")
+
+x = [int(x1) for x1 in input("输入x：").split()]
+d01 = get_d0(x,p1,c1,m1)
+d02 = get_d0(x,p2,c2,m2)
+if d01-d02 > 0:
+    print("为第一类")
+elif d01-d02 == 0:
+    print("两类均有可能")
+else:
+    print("为第二类")
