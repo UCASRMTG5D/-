@@ -47,13 +47,13 @@ def get_d0(x,p,C,m):
     x = np.array(x)
     m = np.array(m)
     a = x-m
-    #print('a为：',a)
+
     b = np.dot(a,np.linalg.inv(C))
-    #print('b为：',b)
+
     c = np.dot(b, a.reshape(-1,1))
-    #print("c为：",c)
+
     d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* c
-    #print("d为：",d)
+
     return(d)
     
 p1 = input("类别一的概率：")
