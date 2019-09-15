@@ -1,0 +1,55 @@
+import numpy as np
+from sympy import *
+import math
+
+def get_x():
+    dim1 = int(input("类别一的个数："))
+    list1 = [[int(x) for x in input("类别一的元素，以空格分隔，换行输入下一个元素：").split()] for y in range(dim1)]
+    dim2 = int(input("类别二的个数："))
+    list2 = [[int(x) for x in input("类别二的元素，以空格分隔，换行输入下一个元素：").split()] for y in range(dim2)] 
+    return([list1,list2])
+
+def get_m(list):
+    m = np.mean(list, axis=0)
+    return(m)
+
+def get_c(list, m):
+    listc = []
+    for line in list:
+       
+        line_trans = line.T
+     
+        c0 = np.dot(line_trans, line)
+        listc.append(c0)   
+    c = np.mean(listc, axis = 0)
+    
+    return(c)
+
+def get_xi(num):
+    c = []
+    for i in range(1,num+1):
+        x = symbols('x'+ str(i))
+        c.append(x)
+    return(c)
+
+def get_d(p,C,m):
+    x = get_xi(len(m))
+    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* np.dot((x-m),np.linalg.inv(C), (x-m).T)
+    return(d)
+    
+p1 = input("类别一的概率：")
+p2 = input("类别二的概率：")
+allx = get_x()
+list1 = np.array(allx[0])
+list2 = np.array(allx[1])
+
+
+m1 = get_m(list1)
+m2 = get_m(list2)
+c1 = get_c(list1, m1)
+c2 = get_c(list2, m2)
+
+d1 = get_d(p1, c1, m1)
+d2 = get_d(p2, c2, m2)
+y = d1 - d2
+print(y)
