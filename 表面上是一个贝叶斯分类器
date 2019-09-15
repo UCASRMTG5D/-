@@ -11,18 +11,17 @@ def get_x():
 
 def get_m(list):
     m = np.mean(list, axis=0)
+    print(m)
     return(m)
 
 def get_c(list, m):
-    listc = []
+    listc = []   
     for line in list:
-       
-        line_trans = line.T
-     
-        c0 = np.dot(line_trans, line)
-        listc.append(c0)   
-    c = np.mean(listc, axis = 0)
-    
+        line = line-m
+        line_trans = np.array(line.reshape(-1,1))
+        c0 = np.dot(line_trans, np.array([line]))
+        listc.append(c0)
+    c = np.mean(listc, axis = 0)    
     return(c)
 
 def get_xi(num):
@@ -34,7 +33,7 @@ def get_xi(num):
 
 def get_d(p,C,m):
     x = get_xi(len(m))
-    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* np.dot((x-m),np.linalg.inv(C), (x-m).T)
+    d = log(p) - 0.5*log(np.linalg.det(C)) - 0.5* np.dot(np.dot((x-m),np.linalg.inv(C)), (x-m).reshape(-1,1))
     return(d)
     
 p1 = input("类别一的概率：")
@@ -48,6 +47,7 @@ m1 = get_m(list1)
 m2 = get_m(list2)
 c1 = get_c(list1, m1)
 c2 = get_c(list2, m2)
+print(m1,m2,c1,c2)
 
 d1 = get_d(p1, c1, m1)
 d2 = get_d(p2, c2, m2)
